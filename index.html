@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau clé-valeur</title>
+    <script>
+        // Fonction pour recharger la page à intervalle régulier
+        setInterval(function() {
+            location.reload();
+        }, 2000); // recharger toutes les 2 secondes
+    </script>
+</head>
+<body>
+    <h1>Tableau des clés et valeurs</h1>
+    <table border="1">
+        <tr>
+            <th>Clé</th>
+            <th>Valeur</th>
+        </tr>
+        {{ range $index, $key := .Keys }}
+        <tr>
+            <td>{{ $key }}</td>
+            <td>{{ index $.Values $index }}</td>
+        </tr>
+        {{ end }}
+    </table>
+</body>
+</html>
