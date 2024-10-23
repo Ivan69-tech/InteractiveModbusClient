@@ -11,10 +11,17 @@ import (
 	"github.com/simonvetter/modbus"
 )
 
-var (
-	Variable1 uint16
-	Variable2 uint16
-)
+type Conf struct {
+	Name      []string
+	Address   []int
+	Type_data []string
+	Bit       []int
+}
+
+type Res struct {
+	Name []string
+	Res  []int
+}
 
 func CreateModbusClient(adresse string, port string) *modbus.ModbusClient {
 
@@ -37,23 +44,25 @@ func CreateModbusClient(adresse string, port string) *modbus.ModbusClient {
 	return client
 }
 
-func Read(mc *modbus.ModbusClient, reg map[string]int) map[string]int {
+func (c *Conf) Read(mc *modbus.ModbusClient, r *Res) {
 
-	res := make(map[string]int)
-	for i, j := range reg {
+	r.Res = make([]int, len(c.Address))
+
+	for i, j := range c.Address {
 		regs, err := mc.ReadRegisters(uint16(j), 1, modbus.HOLDING_REGISTER)
 
 		if err != nil {
 			fmt.Printf("failed to read registers %d: %v\n", j, err)
 		}
-		res[i] = int(regs[0])
+		fmt.Println(regs)
+		r.Res[i] = int(regs[0])
+
 	}
-	return res
+
+	r.Name = c.Name
 }
 
-func Decode() map[string]int {
-
-	res := make(map[string]int)
+func (c *Conf) Decode() {
 
 	file, err := os.Open("conf.csv")
 	if err != nil {
@@ -69,15 +78,18 @@ func Decode() map[string]int {
 	}
 
 	for _, record := range records {
-		//fmt.Println(record)
+		c.Name = append(c.Name, record[0])
 		k, err := strconv.Atoi(record[1])
 		if err != nil {
 			fmt.Printf("failed to convert string to int %v\n", err)
 		}
-		res[record[0]] = k
+		c.Address = append(c.Address, k)
+		c.Type_data = append(c.Type_data, record[2])
+
+		j, err := strconv.Atoi(record[3])
+		if err != nil {
+			fmt.Printf("failed to convert string to int %v\n", err)
+		}
+		c.Bit = append(c.Bit, j)
 	}
-
-	fmt.Println(res)
-
-	return res
 }
