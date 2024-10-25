@@ -47,7 +47,7 @@ func CreateModbusClient(adresse string, port string) *modbus.ModbusClient {
 func (c *Conf) Read(mc *modbus.ModbusClient, r *Res) {
 
 	r.Res = make([]int, len(c.Address))
-
+	fmt.Print("ok")
 	for i, j := range c.Address {
 		regs, err := mc.ReadRegisters(uint16(j), 1, modbus.HOLDING_REGISTER)
 
