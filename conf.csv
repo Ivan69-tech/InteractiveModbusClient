@@ -1,5 +1,5 @@
-Watchdog,44000,int16,100
-State machine,44002,int16,100
-Registre a,40008,int16,100
-Registre b,40009,int16,100
-Registre c,40010,int16,100
+Watchdog,44000,int16,100,holding
+State machine,44002,int16,100,holding
+Registre a,40008,int16,100,holding
+Registre b,40009,int16,holding
+Registre c,40010,int32,100,holding

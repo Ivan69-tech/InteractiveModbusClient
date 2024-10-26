@@ -46,7 +46,6 @@ func updateValues(mc *modbus.ModbusClient) {
 }
 
 func main() {
-	fmt.Println(res)
 	mc := modbus2.CreateModbusClient("localhost", "1502")
 	conf.Decode()
 	fmt.Println(conf)
