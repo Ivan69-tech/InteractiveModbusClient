@@ -40,13 +40,13 @@ func viewHandler(w http.ResponseWriter, r *http.Request, keys []string, values [
 
 func updateValues(mc *modbus.ModbusClient) {
 	for {
-		time.Sleep(2 * time.Second)
+		time.Sleep(1 * time.Second)
 		conf.Read(mc, &res)
 	}
 }
 
 func main() {
-	mc := modbus2.CreateModbusClient("localhost", "1502")
+	mc := modbus2.CreateModbusClient("192.168.0.190", "5502")
 	conf.Decode()
 	fmt.Println(conf)
 	go updateValues(mc)

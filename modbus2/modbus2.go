@@ -51,8 +51,21 @@ func (c *Conf) Read(mc *modbus.ModbusClient, r *Res) {
 
 	for i, j := range c.Address {
 		dataSize := c.Size_data[i]
+		dataSizeRead := 1
 		dataType := c.Type_data[i]
 		dataTypeRead := modbus.HOLDING_REGISTER
+
+		switch dataSize {
+		case "int16", "uint16":
+			dataSizeRead = 1
+
+		case "int32", "uint32":
+			dataSizeRead = 2
+
+		default:
+			fmt.Println("Data size must be int16, uint16, int32 or uint32")
+			os.Exit(1)
+		}
 
 		switch dataType {
 		case "input":
@@ -70,36 +83,24 @@ func (c *Conf) Read(mc *modbus.ModbusClient, r *Res) {
 				r.Res[i] = 0
 			}
 		default:
-			fmt.Println("can not read register type")
-			os.Exit(2)
-		}
-
-		switch dataSize {
-
-		case "int16", "uint16":
-			regs, err := mc.ReadRegisters(uint16(j), 1, dataTypeRead)
-			if err != nil {
-				fmt.Printf("failed to read registers %d: %v\n", j, err)
-			}
-			fmt.Println(regs)
-			r.Res[i] = int(regs[0])
-
-		case "int32", "uint32":
-			regs, err := mc.ReadRegisters(uint16(j), 2, dataTypeRead)
-			if err != nil {
-				fmt.Printf("failed to read registers %d: %v\n", j, err)
-			}
-
-			int32Value := int32(regs[0])<<16 | int32(uint16(regs[1]))
-			r.Res[i] = int(int32Value)
-
-		default:
-			fmt.Printf("failed to read registers data type")
+			fmt.Println("Register Type must input, holding, or coil ")
 			os.Exit(1)
 		}
 
-	}
+		if dataType != "coil" {
+			regs, err := mc.ReadRegisters(uint16(j), uint16(dataSizeRead), dataTypeRead)
+			if err != nil {
+				fmt.Printf("failed to read registers %d: %v\n", j, err)
+			}
 
+			if dataSizeRead == 2 {
+				int32Value := int32(regs[0])<<16 | int32(uint16(regs[1]))
+				r.Res[i] = int(int32Value)
+			} else {
+				r.Res[i] = int(regs[0])
+			}
+		}
+	}
 	r.Name = c.Name
 }
 

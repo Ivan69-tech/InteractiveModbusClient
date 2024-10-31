@@ -1,5 +1,8 @@
-Watchdog,44000,int16,100,holding
-State machine,44002,int16,100,holding
-Registre a,40008,int16,100,holding
-Registre b,40009,int16,holding
-Registre c,40010,int32,100,holding
+Watchdog,53248,uint32,100,holding
+target state,53506,uint32,100,holding
+State machine,9472,uint32,100,input
+system status word,9474,uint32,100,input
+safety flags reading 1 ,16384,uint32,100,input
+safety flags reading 2 ,16386,uint32,100,input
+P measurement,9488,int32,100,input
+Q measurement,9490,int32,100,input
