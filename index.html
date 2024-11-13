@@ -3,7 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tableau clé-valeur</title>
+    <title>Lecture Modbus</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        table {
+            width: 50vw; /* 50% de la largeur de la fenêtre d'affichage */
+            max-width: 80%;
+            border-collapse: collapse;
+            text-align: center;
+            margin: 0 auto;
+        }
+
+        th, td {
+            padding: 15px; /* Augmente l'espacement dans chaque cellule */
+            border: 1px solid #ddd;
+            vertical-align: middle;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        .red-cell {
+            background-color: red;
+            color: white;
+        }
+    </style>
     <script>
         // Fonction pour recharger la page à intervalle régulier
         setInterval(function() {
@@ -12,18 +46,22 @@
     </script>
 </head>
 <body>
-    <h1>Tableau des clés et valeurs</h1>
-    <table border="1">
-        <tr>
-            <th>Clé</th>
-            <th>Valeur</th>
-        </tr>
-        {{ range $index, $key := .Keys }}
-        <tr>
-            <td>{{ $key }}</td>
-            <td>{{ index $.Values $index }}</td>
-        </tr>
-        {{ end }}
-    </table>
+    <div>
+        <h1 style="text-align: center;">Resultat de la lecture Modbus</h1>
+        <table>
+            <tr>
+                <th>Signal</th>
+                <th>Valeur</th>
+            </tr>
+            {{ range $index, $key := .Keys }}
+            <tr>
+                <td>{{ $key }}</td>
+                <td class="{{ if eq (index $.Values $index) 1 }}red-cell{{ end }}">
+                    {{ index $.Values $index }}
+                </td>
+            </tr>
+            {{ end }}
+        </table>
+    </div>
 </body>
 </html>

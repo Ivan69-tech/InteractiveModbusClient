@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/simonvetter/modbus"
@@ -54,6 +55,7 @@ func (c *Conf) Read(mc *modbus.ModbusClient, r *Res) {
 		dataSizeRead := 1
 		dataType := c.Type_data[i]
 		dataTypeRead := modbus.HOLDING_REGISTER
+		bitNumber := c.Bit[i]
 
 		switch dataSize {
 		case "int16", "uint16":
@@ -76,8 +78,8 @@ func (c *Conf) Read(mc *modbus.ModbusClient, r *Res) {
 			regs, err := mc.ReadCoil(uint16(j))
 			if err != nil {
 				fmt.Printf("failed to read coil registers %d: %v\n", j, err)
-			}
-			if regs == true {
+				r.Res[i] = 404
+			} else if regs == true {
 				r.Res[i] = 1
 			} else {
 				r.Res[i] = 0
@@ -91,13 +93,23 @@ func (c *Conf) Read(mc *modbus.ModbusClient, r *Res) {
 			regs, err := mc.ReadRegisters(uint16(j), uint16(dataSizeRead), dataTypeRead)
 			if err != nil {
 				fmt.Printf("failed to read registers %d: %v\n", j, err)
-			}
+				r.Res[i] = 404
 
-			if dataSizeRead == 2 {
+			} else if dataSizeRead == 2 {
 				int32Value := int32(regs[0])<<16 | int32(uint16(regs[1]))
-				r.Res[i] = int(int32Value)
+
+				if bitNumber < 32 {
+					r.Res[i] = int(int32Value >> bitNumber & 1)
+				} else {
+					r.Res[i] = int(int32Value)
+				}
+
 			} else {
-				r.Res[i] = int(regs[0])
+				if bitNumber < 32 {
+					r.Res[i] = int(regs[0] >> bitNumber & 1)
+				} else {
+					r.Res[i] = int(regs[0])
+				}
 			}
 		}
 	}
@@ -106,7 +118,7 @@ func (c *Conf) Read(mc *modbus.ModbusClient, r *Res) {
 
 func (c *Conf) Decode() {
 
-	file, err := os.Open("conf.csv")
+	file, err := os.Open("conf-copy.csv")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -125,11 +137,22 @@ func (c *Conf) Decode() {
 		c.Name = append(c.Name, record[0])
 
 		//decode le registre
-		k, err := strconv.Atoi(record[1])
-		if err != nil {
-			fmt.Printf("failed to convert string to int %v\n", err)
+
+		if strings.HasPrefix(record[1], "0x") {
+
+			k, err := strconv.ParseInt(record[1], 0, 0)
+			if err != nil {
+				fmt.Println("Erreur lors de la conversion du registre hexadécimal:", err)
+			}
+			c.Address = append(c.Address, int(k))
+
+		} else {
+			k, err := strconv.Atoi(record[1])
+			if err != nil {
+				fmt.Printf("failed to convert string to int %v\n", err)
+			}
+			c.Address = append(c.Address, k)
 		}
-		c.Address = append(c.Address, k)
 
 		//decode la taille de la donnée requise
 		c.Size_data = append(c.Size_data, record[2])
