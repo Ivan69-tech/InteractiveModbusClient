@@ -1,9 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"gotools2/modbus2"
-	"html/template"
 	"log"
 	"net/http"
 	"time"
@@ -12,8 +12,8 @@ import (
 )
 
 type Data struct {
-	Keys   []string
-	Values []int
+	Signal []string `json:"signal"`
+	Values []int    `json:"values"`
 }
 
 var (
@@ -22,17 +22,19 @@ var (
 	conf = modbus2.Conf{}
 )
 
-func viewHandler(w http.ResponseWriter, r *http.Request, keys []string, values []int) {
-	tmpl, err := template.ParseFiles("index.html")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+func serveIndex(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "index.html")
+}
+
+func dataHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	data := Data{
+		Signal: res.Name,
+		Values: res.Res,
 	}
 
-	err = tmpl.Execute(w, Data{
-		Keys:   keys,
-		Values: values,
-	})
+	err := json.NewEncoder(w).Encode(data)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -51,9 +53,8 @@ func main() {
 	fmt.Println(conf)
 	go updateValues(mc)
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		viewHandler(w, r, res.Name, res.Res)
-	})
+	http.HandleFunc("/", serveIndex)
+	http.HandleFunc("/data", dataHandler)
 
 	log.Println("Serveur démarré sur http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))

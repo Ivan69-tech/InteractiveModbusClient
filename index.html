@@ -15,7 +15,7 @@
         }
 
         table {
-            width: 50vw; /* 50% de la largeur de la fenêtre d'affichage */
+            width: 50vw; 
             max-width: 80%;
             border-collapse: collapse;
             text-align: center;
@@ -23,7 +23,7 @@
         }
 
         th, td {
-            padding: 15px; /* Augmente l'espacement dans chaque cellule */
+            padding: 15px; 
             border: 1px solid #ddd;
             vertical-align: middle;
         }
@@ -59,32 +59,36 @@
         // Fonction pour mettre à jour le tableau avec les données récupérées
         function updateTable(data) {
             var tableBody = document.querySelector('#modbus-table tbody');
-            tableBody.innerHTML = ''; // Vider le corps du tableau
+            tableBody.innerHTML = ''; // Clear the table body before updating it
 
-            data.forEach(function(row) {
+            // Parcours des deux tableaux signal et values en même temps
+            for (let i = 0; i < data.signal.length; i++) {
                 var tr = document.createElement('tr');
 
                 var tdKey = document.createElement('td');
-                tdKey.textContent = row.key;
+                tdKey.textContent = data.signal[i];
                 tr.appendChild(tdKey);
 
                 var tdValue = document.createElement('td');
-                tdValue.textContent = row.value;
-                if (row.value == 1) {
+                tdValue.textContent = data.values[i];
+                if (data.values[i] === 1) {
                     tdValue.classList.add('red-cell');
                 }
                 tr.appendChild(tdValue);
 
                 tableBody.appendChild(tr);
-            });
+            }
         }
 
         // Fonction pour envoyer une requête fetch et récupérer les données
         async function fetchData() {
             try {
                 let response = await fetch('/data');
+                console.log("response : ", response)
+            
                 if (response.ok) {
                     let data = await response.json();
+                    console.log("response.json()", data)
                     updateTable(data);
                 } else {
                     console.error('Request failed with status: ' + response.status);
