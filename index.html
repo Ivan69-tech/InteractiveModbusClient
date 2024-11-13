@@ -38,30 +38,67 @@
             color: white;
         }
     </style>
-    <script>
-        // Fonction pour recharger la page à intervalle régulier
-        setInterval(function() {
-            location.reload();
-        }, 1000); // recharger toutes les 2 secondes
-    </script>
 </head>
 <body>
     <div>
         <h1 style="text-align: center;">Resultat de la lecture Modbus</h1>
-        <table>
-            <tr>
-                <th>Signal</th>
-                <th>Valeur</th>
-            </tr>
-            {{ range $index, $key := .Keys }}
-            <tr>
-                <td>{{ $key }}</td>
-                <td class="{{ if eq (index $.Values $index) 1 }}red-cell{{ end }}">
-                    {{ index $.Values $index }}
-                </td>
-            </tr>
-            {{ end }}
+        <table id="modbus-table">
+            <thead>
+                <tr>
+                    <th>Signal</th>
+                    <th>Valeur</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Les données seront insérées ici par JavaScript -->
+            </tbody>
         </table>
     </div>
+
+    <script>
+        // Fonction pour mettre à jour le tableau avec les données récupérées
+        function updateTable(data) {
+            var tableBody = document.querySelector('#modbus-table tbody');
+            tableBody.innerHTML = ''; // Vider le corps du tableau
+
+            data.forEach(function(row) {
+                var tr = document.createElement('tr');
+
+                var tdKey = document.createElement('td');
+                tdKey.textContent = row.key;
+                tr.appendChild(tdKey);
+
+                var tdValue = document.createElement('td');
+                tdValue.textContent = row.value;
+                if (row.value == 1) {
+                    tdValue.classList.add('red-cell');
+                }
+                tr.appendChild(tdValue);
+
+                tableBody.appendChild(tr);
+            });
+        }
+
+        // Fonction pour envoyer une requête fetch et récupérer les données
+        async function fetchData() {
+            try {
+                let response = await fetch('/data');
+                if (response.ok) {
+                    let data = await response.json();
+                    updateTable(data);
+                } else {
+                    console.error('Request failed with status: ' + response.status);
+                }
+            } catch (error) {
+                console.error('Request failed', error);
+            }
+        }
+
+        // Récupérer les données immédiatement lorsque la page se charge
+        fetchData();
+
+        // Récupérer les données toutes les secondes
+        setInterval(fetchData, 1000);
+    </script>
 </body>
 </html>
