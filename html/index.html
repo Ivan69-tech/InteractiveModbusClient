@@ -6,6 +6,9 @@
     <title>Lecture Modbus</title>
     
     <style>
+        /* Toute la portion style est du code ChatGPT qui fait très bien cela et ce n'est pas intéressant... */
+
+
         /* Reset de marges et de padding */
         * {
             margin: 0;
@@ -131,7 +134,6 @@
 <body>
     <div>
         
-        <!-- Formulaire pour saisir la donnée -->
         <div class="form-container">
             
         <h1>Host du serveur modbus</h1>
@@ -153,13 +155,14 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Les données seront insérées ici par JavaScript -->
+                <!-- Insertion des lectures modbus-->
             </tbody>
         </table>
     </div>
 
     <script>
-        // Fonction pour envoyer des données au backend
+        // bien comprendre comment faire des requetes AJAX pour updater le front sans recharger la page
+
         async function sendData() {
             const host = document.getElementById('host').value;
 
@@ -185,12 +188,12 @@
             }
         }
 
-        // Fonction pour mettre à jour le tableau avec les données récupérées
+       
         function updateTable(data) {
             var tableBody = document.querySelector('#modbus-table tbody');
             tableBody.innerHTML = ''; // Clear the table body before updating it
 
-            // Parcours des deux tableaux signal et values en même temps
+            // Parcours des deux tableaux signal et values en même temps --> merci ChatGPT
             for (let i = 0; i < data.signal.length; i++) {
                 var tr = document.createElement('tr');
 
@@ -225,10 +228,9 @@
             }
         }
 
-        // Initialisation de la fonction pour charger les données à l'ouverture de la page
+
         fetchData();
 
-        // Actualiser les données toutes les secondes
         setInterval(fetchData, 1000);
 
         function changePage(url) {

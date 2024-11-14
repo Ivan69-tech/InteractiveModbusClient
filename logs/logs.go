@@ -11,7 +11,9 @@ import (
 var LogsBuffer bytes.Buffer
 
 func StartLogging() {
-	// Créer un pipe pour rediriger stdout et stderr
+	// Créer un pipe pour rediriger stdout et stderr qui contiennent tous les outputs fmt et log
+	// c'est du code chatGPT
+
 	reader, writer, err := os.Pipe()
 	if err != nil {
 		log.Fatal(err)

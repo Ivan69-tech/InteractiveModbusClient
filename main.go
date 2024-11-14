@@ -86,7 +86,6 @@ func dataHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Handler pour traiter la requête POST et récupérer la donnée
 func sendDataHandler(w http.ResponseWriter, r *http.Request) {
 
 	var dataReceived DataReceived

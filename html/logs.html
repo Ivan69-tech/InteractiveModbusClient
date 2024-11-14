@@ -6,6 +6,10 @@
     <title>Logs</title>
     
     <style>
+
+        /* toute la section style est du code ChatGPT */
+
+
         /* Reset de marges et de padding */
         * {
             margin: 0;
@@ -121,6 +125,8 @@
     </div>
 
     <script>
+        // autre manière pour récupérer des données de mon back
+        
         function fetchLogs() {
             fetch('/getlogs')  
                 .then(response => response.json())
@@ -133,10 +139,8 @@
                 });
         }
 
-        // Appeler la fonction pour récupérer les logs
         fetchLogs();
         
-        // Optionnel : Rafraîchir les logs toutes les 10 secondes par exemple
         setInterval(fetchLogs, 1000);
 
         function changePage(url) {
