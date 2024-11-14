@@ -25,7 +25,7 @@ La première ligne ne doit pas être indiqué. Les espaces ne sont pas supporté
 
 Si un signal binaire est lu à 1, la case correspondante devient rouge pour faciliter la lecture des signaux actifs.
 
-/!\ Le tableau CSV doit être placé à la racine du binaire ou du .exe.
+/!\ Le tableau CSV doit être placé à la racine du binaire ou du .exe. IL DOIT SE NOMMER conf.csv.
 
 ------ B. il faut renseigner le host du serveur modbus sur la page d'accueil.
 
