@@ -33,30 +33,29 @@ var (
 	conf = modbus2.Conf{}
 )
 
-//go:embed html/index.html
-//go:embed html/logs.html
+//go:embed static/html/*.html
+//go:embed static/js/*.js
+//go:embed README.md
 var content embed.FS
 
+func serveJs(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "static/js/marked.min.js")
+}
+
 func serveIndex(w http.ResponseWriter, r *http.Request) {
-	// Serve le fichier index.html depuis l'embed
-	data, err := content.ReadFile("html/index.html")
-	if err != nil {
-		http.Error(w, "Erreur lors du chargement du fichier", http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Content-Type", "text/html")
-	w.Write(data)
+	http.ServeFile(w, r, "static/html/index.html")
 }
 
 func serveLogs(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "static/html/logs.html")
+}
 
-	data, err := content.ReadFile("html/logs.html")
-	if err != nil {
-		http.Error(w, "Erreur lors du chargement du fichier", http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Content-Type", "text/html")
-	w.Write(data)
+func serveReadmePage(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "static/html/readme.html")
+}
+
+func serveReadme(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "README.md")
 }
 
 func logsHandler(w http.ResponseWriter, r *http.Request) {
@@ -127,6 +126,9 @@ func main() {
 
 	logs.StartLogging()
 	go logs.ResetBuffer()
+	http.HandleFunc("/readme", serveReadme)
+	http.HandleFunc("/marked.min.js", serveJs)
+	http.HandleFunc("/readme-page", serveReadmePage)
 	http.HandleFunc("/", serveIndex)
 	http.HandleFunc("/data", dataHandler)
 	http.HandleFunc("/sendData", sendDataHandler)

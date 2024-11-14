@@ -45,7 +45,10 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             width: 100%;
             max-width: 400px; /* Limite la largeur du formulaire */
-            margin: 0 auto 30px auto; /* Centrage horizontal */
+            margin: 0 auto 35px auto; /* Centrage horizontal */
+            display: flex;
+            flex-direction: column; /* Permet d'aligner les éléments en colonne */
+            align-items: center; /* Centrer les éléments horizontalement */
         }
     
         input[type="text"] {
@@ -65,11 +68,12 @@
 
         .button-container {
             display: flex;
-            justify-content: space-between;
+            justify-content: center; /* Centrer le bouton */
+            width: 100%; /* S'assurer que le conteneur prend toute la largeur */
         }
     
         button {
-            width: calc(50% - 5px); /* Taille ajustée pour deux boutons */
+            width: 100%; /* Taille ajustée pour deux boutons */
             padding: 12px;
             background-color: #3498db; /* Couleur bleue pour le bouton */
             color: #fff;
@@ -78,6 +82,7 @@
             border-radius: 4px;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            margin: 5px;
         }
         
         button:hover {
@@ -135,12 +140,12 @@
     <div>
         
         <div class="form-container">
+        
             
         <h1>Host du serveur modbus</h1>
         <input type="text" id="host" placeholder="host" />
         <div class="button-container">
             <button type="submit" onclick="sendData()">Go</button>
-            <button type="submit" onclick="changePage('/logs')">Voir les logs</button>
         </div>
 
         </div>

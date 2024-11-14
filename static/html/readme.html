@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>README</title>
+    <style>
+
+        body {
+            font-family: 'Roboto', sans-serif;  /* Applique la police Roboto */
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f7fb;
+            color: #333;
+        }
+
+        #content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 75%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div id="content">
+        <!-- Le contenu Markdown sera inséré ici -->
+    </div>
+
+    <script type="text/javascript" src="marked.min.js"></script>
+
+
+    <script>
+        console.log("ok pour traduction");
+        async function fetchReadme() {
+            try {
+                const response = await fetch('/readme');
+                const markdown = await response.text();
+                
+                // Utiliser marked.js pour convertir le Markdown en HTML
+                document.getElementById('content').innerHTML = marked.parse(markdown);
+            } catch (error) {
+                console.error('Erreur:', error);
+            }
+        }
+
+        // Appeler la fonction pour récupérer et afficher le README
+        fetchReadme();
+    </script>
+</body>
+</html>
