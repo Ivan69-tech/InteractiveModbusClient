@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture Modbus</title>
+    
+    <style>
+        /* Reset de marges et de padding */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+    
+        /* Corps de la page : centrer tout le contenu */
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fb; /* Couleur de fond claire */
+            color: #333;
+        }
+    
+        /* Style des titres */
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            color: #2C3E50;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+    
+        /* Style du formulaire */
+        .form-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px; /* Limite la largeur du formulaire */
+            margin: 0 auto 30px auto; /* Centrage horizontal */
+        }
+    
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+    
+        input[type="text"]:focus {
+            border-color: #3498db; /* Bordure bleue au focus */
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+        }
+    
+        button {
+            width: calc(50% - 5px); /* Taille ajustée pour deux boutons */
+            padding: 12px;
+            background-color: #3498db; /* Couleur bleue pour le bouton */
+            color: #fff;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        button:hover {
+            background-color: #2980b9; /* Couleur bleue plus sombre au survol */
+        }
+    
+        /* Style du tableau */
+        table {
+            width: 75%; /* Table prend 75% de la largeur */
+            max-width: 100%; /* S'assure que le tableau ne dépasse pas la largeur du conteneur */
+            border-collapse: collapse;
+            margin: 30px auto; /* Centrer le tableau avec une marge au-dessus */
+            table-layout: fixed; /* Fixe la taille des colonnes */
+        }
+
+        /* Assurer que les colonnes ne se brisent pas */
+        th, td {
+            padding: 15px;
+            border: 1px solid #ddd;
+            text-align: center;
+            vertical-align: middle;
+            word-wrap: break-word; /* Permet de couper les mots si trop longs */
+            white-space: nowrap; /* Evite le retour à la ligne */
+        }
+
+        /* Donner une largeur minimale à la colonne signal */
+        th:nth-child(1), td:nth-child(1) {
+            min-width: 150px; /* largeur minimale pour la colonne Signal */
+        }
+
+        /* Colonne Valeur peut se redimensionner */
+        th:nth-child(2), td:nth-child(2) {
+            min-width: 100px; /* largeur minimale pour la colonne Valeur */
+        }
+
+        /* Ajout du style pour la cellule rouge */
+        .red-cell {
+            background-color: red;
+            color: white;
+        }
+    
+        /* Responsive pour les petits écrans */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 20px;
+            }
+    
+            input[type="text"], button {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div>
+        
+        <!-- Formulaire pour saisir la donnée -->
+        <div class="form-container">
+            
+        <h1>Host du serveur modbus</h1>
+        <input type="text" id="host" placeholder="host" />
+        <div class="button-container">
+            <button type="submit" onclick="sendData()">Go</button>
+            <button type="submit" onclick="changePage('/logs')">Voir les logs</button>
+        </div>
+
+        </div>
+
+        <h1>Résultat de la lecture Modbus</h1>
+        
+        <table id="modbus-table">
+            <thead>
+                <tr>
+                    <th>Signal</th>
+                    <th>Valeur</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Les données seront insérées ici par JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Fonction pour envoyer des données au backend
+        async function sendData() {
+            const host = document.getElementById('host').value;
+
+            const data = {host: host};
+
+            try {
+                const response = await fetch('/sendData', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                if (response.ok) {
+                    const jsonResponse = await response.json();
+                    console.log('Réponse du serveur:', jsonResponse);
+                } else {
+                    console.error('Erreur lors de l\'envoi des données');
+                }
+            } catch (error) {
+                console.error('Erreur de réseau:', error);
+            }
+        }
+
+        // Fonction pour mettre à jour le tableau avec les données récupérées
+        function updateTable(data) {
+            var tableBody = document.querySelector('#modbus-table tbody');
+            tableBody.innerHTML = ''; // Clear the table body before updating it
+
+            // Parcours des deux tableaux signal et values en même temps
+            for (let i = 0; i < data.signal.length; i++) {
+                var tr = document.createElement('tr');
+
+                var tdKey = document.createElement('td');
+                tdKey.textContent = data.signal[i];
+                tr.appendChild(tdKey);
+
+                var tdValue = document.createElement('td');
+                tdValue.textContent = data.values[i];
+                if (data.values[i] === 1) {
+                    tdValue.classList.add('red-cell');
+                }
+                tr.appendChild(tdValue);
+
+                tableBody.appendChild(tr);
+            }
+        }
+
+        // Fonction pour envoyer une requête fetch et récupérer les données
+        async function fetchData() {
+            try {
+                let response = await fetch('/data');
+            
+                if (response.ok) {
+                    let data = await response.json();
+                    updateTable(data);
+                } else {
+                    console.error('Request failed with status: ' + response.status);
+                }
+            } catch (error) {
+                console.error('Request failed', error);
+            }
+        }
+
+        // Initialisation de la fonction pour charger les données à l'ouverture de la page
+        fetchData();
+
+        // Actualiser les données toutes les secondes
+        setInterval(fetchData, 1000);
+
+        function changePage(url) {
+            window.location.href = url;
+        }
+
+    </script>
+</body>
+</html>

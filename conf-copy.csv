@@ -1,6 +1,7 @@
 Test coil reg 10,10,int16,100,coil
 Test coil reg 11,11,int16,100,coil
 Test input int16 reg 100,100,int16,100,input
+Test error int16 reg 150,150,int16,100,input
 Test input int32 reg 100,100,int32,100,input
 Test holding int16 reg 1000,1000,int16,3,holding
 Test input int16 reg 1100,0x44c,int16,4,holding

@@ -25,25 +25,25 @@ type Res struct {
 	Res  []int
 }
 
-func CreateModbusClient(adresse string, port string) *modbus.ModbusClient {
+func CreateModbusClient(host string) (*modbus.ModbusClient, error) {
 
 	client, err := modbus.NewClient(&modbus.ClientConfiguration{
-		URL:     "tcp://" + adresse + ":" + port,
+		URL:     "tcp://" + host,
 		Timeout: 1 * time.Second,
 	})
 
 	if err != nil {
 		fmt.Printf("failed to create modbus client: %v\n", err)
-		os.Exit(1)
+		return nil, err
 	}
 
 	err = client.Open()
 	if err != nil {
 		fmt.Printf("failed to connect: %v\n", err)
-		os.Exit(2)
+		return nil, err
 	}
 
-	return client
+	return client, nil
 }
 
 func (c *Conf) Read(mc *modbus.ModbusClient, r *Res) {
@@ -116,9 +116,9 @@ func (c *Conf) Read(mc *modbus.ModbusClient, r *Res) {
 	r.Name = c.Name
 }
 
-func (c *Conf) Decode() {
+func (c *Conf) Decode(path string) {
 
-	file, err := os.Open("conf-copy.csv")
+	file, err := os.Open(path)
 	if err != nil {
 		log.Fatal(err)
 	}

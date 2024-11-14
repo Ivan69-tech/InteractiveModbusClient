@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logs</title>
+    
+    <style>
+        /* Reset de marges et de padding */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+    
+        /* Corps de la page : centrer tout le contenu */
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fb; /* Couleur de fond claire */
+            color: #333;
+            padding: 20px; /* Ajouter un padding pour ne pas coller au bord de l'écran */
+        }
+
+        /* Style des titres */
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            color: #2C3E50;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        /* Style du conteneur du bouton */
+        .button-container {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 12px 20px;
+            background-color: #3498db; /* Couleur bleue pour le bouton */
+            color: #fff;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: auto;
+        }
+        
+        button:hover {
+            background-color: #2980b9; /* Couleur bleue plus sombre au survol */
+        }
+
+        /* Style de la section log */
+        .form-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px; /* Limite la largeur */
+            margin: 0 auto;
+            text-align: center;
+            flex-grow: 1; /* Permet à la section de s'étendre pour occuper l'espace disponible */
+        }
+
+        /* Section des logs */
+        #log {
+            background-color: #f1f1f1;
+            padding: 15px;
+            border-radius: 4px;
+            flex-grow: 1; /* Permet à la section des logs de s'étendre */
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #333;
+            margin-top: 20px;
+            width: 100%;
+            height: auto; /* Supprime la hauteur fixe */
+            white-space: pre-wrap; /* Préserve la mise en forme des retours à la ligne */
+            word-wrap: break-word; /* Permet de couper les mots longs */
+            overflow-y: auto; /* Permet le défilement si nécessaire */
+            max-height: 80vh; /* Permet au bloc de logs de prendre 80% de la hauteur de l'écran */
+        }
+    
+        /* Responsive pour les petits écrans */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 20px;
+            }
+
+            button {
+                font-size: 14px;
+            }
+
+            #log {
+                height: auto;
+                max-height: 60vh; /* Ajuste la hauteur du log pour les petits écrans */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="form-container">
+            <div class="button-container">
+                <button type="submit" onclick="changePage('/')">Retour aux requêtes</button>
+            </div>
+            <h1>Logs du programme de lecture modbus</h1>
+            <div id="log">
+                <!-- affichage des logs ici -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function fetchLogs() {
+            fetch('/getlogs')  
+                .then(response => response.json())
+                .then(data => {
+                    // Mise à jour du contenu des logs
+                    document.getElementById('log').innerText = data.log;
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                });
+        }
+
+        // Appeler la fonction pour récupérer les logs
+        fetchLogs();
+        
+        // Optionnel : Rafraîchir les logs toutes les 10 secondes par exemple
+        setInterval(fetchLogs, 1000);
+
+        function changePage(url) {
+            window.location.href = url;
+        }
+    </script>
+</body>
+</html>
