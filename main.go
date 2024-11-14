@@ -38,22 +38,6 @@ var (
 //go:embed README.md
 var content embed.FS
 
-func serveJs(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "static/js/marked.min.js")
-}
-
-func serveIndex(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "static/html/index.html")
-}
-
-func serveLogs(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "static/html/logs.html")
-}
-
-func serveReadmePage(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "static/html/readme.html")
-}
-
 func serveReadme(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "README.md")
 }
@@ -126,14 +110,12 @@ func main() {
 
 	logs.StartLogging()
 	go logs.ResetBuffer()
-	http.HandleFunc("/readme", serveReadme)
-	http.HandleFunc("/marked.min.js", serveJs)
-	http.HandleFunc("/readme-page", serveReadmePage)
-	http.HandleFunc("/", serveIndex)
+
+	http.Handle("/", http.FileServer(http.Dir("./static")))
 	http.HandleFunc("/data", dataHandler)
 	http.HandleFunc("/sendData", sendDataHandler)
-	http.HandleFunc("/logs", serveLogs)
 	http.HandleFunc("/getlogs", logsHandler)
+	http.HandleFunc("/readme", serveReadme)
 
 	log.Println("Serveur démarré sur http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
