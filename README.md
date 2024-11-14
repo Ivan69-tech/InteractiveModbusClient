@@ -35,10 +35,10 @@ Si vous rencontrez des problèmes lors de la lecture modbus, analyser les logs v
 Si une requête ModBus n'a pas pu aboutir, vous lirez 404 
 Les logs sont limités à 70 lignes.
 
-## futures améliorations
+## Futures améliorations
 
-1. Supporter le slave ID
-2. Griser les lectures modbus en échecs
-3. Améliorer la gestion des erreurs
-4. Améliorer la manière de renseigner le tableau des requêtes. Ce n'est pas très intuitifs
-5. Héberger le projet sur un serveur distant type raspberry Pi (Attention au forward de l'host)
+1. Supporter le slave ID.
+2. Griser les lectures modbus en échecs.
+3. Améliorer la gestion des erreurs.
+4. Améliorer la manière de renseigner le tableau des requêtes. Ce n'est pas très intuitif.
+5. Héberger le projet sur un serveur distant type raspberry Pi (Attention au forward de l'host).
