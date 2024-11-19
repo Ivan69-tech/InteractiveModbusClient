@@ -1,0 +1,64 @@
+
+<div class="topnav">
+  <a class="active" href="/html">Requêtes modbus</a>
+  <a href="/html/readme.html">ReadME</a>
+  <a href="/html/logs.html">Logs</a>
+
+</div> 
+
+<style> 
+
+/* Style for the navigation bar */
+.topnav {
+  background-color: white; /* Background color of the navbar */
+  overflow: hidden;
+  position: fixed; /* Fix the navbar at the top */
+  top: 0;
+  width: 100%; /* Make the navbar take the full width */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Optional: add a subtle shadow */
+  z-index: 1000; /* Ensure it is above other elements */
+}
+
+/* Style for the navigation bar */
+.topnav {
+  background-color: white; /* Background color of the navbar */
+  overflow: hidden;
+  position: fixed; /* Fix the navbar at the top */
+  top: 0;
+  left: 0; /* Ensure the navbar is aligned to the left */
+  width: 100%; /* Make the navbar take the full width */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Optional: add a subtle shadow */
+  z-index: 1000; /* Ensure it is above other elements */
+}
+
+/* Style the links inside the navigation bar */
+.topnav a {
+  float: left;
+  color: black; /* Text color */
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+  transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effect */
+}
+
+/* Change the color of links on hover */
+.topnav a:hover {
+  background-color: #04AA6D; /* Background color on hover */
+  color: white; /* Text color on hover */
+}
+
+/* Add a color to the active/current link */
+.topnav a.active {
+  background-color: #04AA6D; /* Background color for the active link */
+  color: white; /* Text color for the active link */
+}
+
+/* Ensure the body content does not hide behind the fixed navbar */
+body {
+  margin: 0; /* Remove default margin */
+  padding: 0; /* Remove default padding */
+  padding-top: 50px; /* Adjust this value based on the height of your navbar */
+}
+
+</style>

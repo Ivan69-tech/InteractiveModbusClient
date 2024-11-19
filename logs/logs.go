@@ -2,7 +2,6 @@ package logs
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -34,7 +33,6 @@ func StartLogging() {
 }
 
 func ResetBuffer() {
-	fmt.Println("Reset Buffer")
 	for {
 		if bytes.Count(LogsBuffer.Bytes(), []byte{'\n'}) > 70 {
 			LogsBuffer.Reset()

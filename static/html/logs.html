@@ -112,6 +112,7 @@
     </style>
 </head>
 <body>
+    <div id="navbar"></div>
     <div>
         <div class="form-container">
             <div class="button-container">
@@ -124,7 +125,12 @@
         </div>
     </div>
 
+    <script src="../js/jquery.js"></script> 
     <script>
+
+    $(function(){
+      $("#navbar").load("nav.html"); 
+    });
         // autre manière pour récupérer des données de mon back
         
         function fetchLogs() {

@@ -123,6 +123,11 @@
             background-color: red;
             color: white;
         }
+
+        .grey-cell {
+            background-color: grey;
+            color: white;
+        }
     
         /* Responsive pour les petits écrans */
         @media (max-width: 600px) {
@@ -137,6 +142,7 @@
     </style>
 </head>
 <body>
+    <div id="navbar"></div>
     <div>
         
         <div class="form-container">
@@ -165,12 +171,19 @@
         </table>
     </div>
 
+    
+    
+    <script src="../js/jquery.js"></script> 
     <script>
+
+        $(function(){
+            $("#navbar").load("nav.html"); 
+            });
+            
         // bien comprendre comment faire des requetes AJAX pour updater le front sans recharger la page
 
         async function sendData() {
             const host = document.getElementById('host').value;
-
             const data = {host: host};
 
             try {
@@ -195,10 +208,9 @@
 
        
         function updateTable(data) {
-            var tableBody = document.querySelector('#modbus-table tbody');
+            var tableBody = document.querySelector('#modbus-table');
             tableBody.innerHTML = ''; // Clear the table body before updating it
 
-            // Parcours des deux tableaux signal et values en même temps --> merci ChatGPT
             for (let i = 0; i < data.signal.length; i++) {
                 var tr = document.createElement('tr');
 
@@ -210,6 +222,10 @@
                 tdValue.textContent = data.values[i];
                 if (data.values[i] === 1) {
                     tdValue.classList.add('red-cell');
+                }
+                else if (data.values[i] === 404) {
+                    tdValue.textContent = "Not found"
+                    tdValue.classList.add('grey-cell');
                 }
                 tr.appendChild(tdValue);
 

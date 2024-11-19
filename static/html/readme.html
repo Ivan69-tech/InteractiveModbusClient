@@ -44,6 +44,7 @@
     </style>
 </head>
 <body>
+    <div id="navbar"></div>
     <div id="content">
         <!-- Le contenu Markdown sera inséré ici -->
     </div>
@@ -51,7 +52,12 @@
     <script type="text/javascript" src="../js/marked.min.js"></script>
 
 
+    <script src="../js/jquery.js"></script> 
     <script>
+
+    $(function(){
+      $("#navbar").load("nav.html"); 
+    });
         console.log("ok pour traduction");
         async function fetchReadme() {
             try {

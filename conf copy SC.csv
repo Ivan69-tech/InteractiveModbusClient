@@ -1,12 +1,23 @@
 Watchdog,0xd000,uint32,100,holding
 Target State,0xd102,uint32,100,holding
-Real State,0x2500,int32,100,input
 DC bus auto P setpoint,0xd104,uint32,100,holding
 DC bus auto Q setpoint,0xd106,uint32,100,holding
 E-stop triggered,0x4000,uint32,0,input
 FCP fault,0x4000,uint32,1,input
 FCP Pré-alarm,0x4000,uint32,2,input
 FCP Alarm,0x4000,uint32,3,input
+Agent released,0x4000,uint32,5,input
+H2 sensor fault,0x4000,uint32,9,input
+H2 level fault,0x4000,uint32,11,input
+H2 level warning,0x4000,uint32,13,input
+Water tank low level,0x4000,uint32,16,input
+Water tank high level,0x4000,uint32,17,input
+Flow switch,0x4000,uint32,18,input
+Pump fault,0x4000,uint32,19,input
+Pump is active,0x4000,uint32,20,input
+EV is open,0x4000,uint32,22,input
+H2 fire damper open,0x4000,uint32,26,input
+Fire safety breaker open,0x4000,uint32,27,input
 HVAC1 fault,0x4100,uint32,7,input
 HVAC2 fault,0x4200,uint32,7,input
 HVAC3 fault,0x4300,uint32,7,input

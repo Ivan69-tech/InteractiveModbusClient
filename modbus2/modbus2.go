@@ -120,6 +120,7 @@ func (c *Conf) Read(mc *modbus.ModbusClient, r *Res) {
 func (c *Conf) Decode(path string) {
 
 	// il est probable que l'on puisse faire beaucoup plus simple en utilisant des modules de lecture csv pré existant.
+
 	file, err := os.Open(path)
 	if err != nil {
 		log.Fatal(err)

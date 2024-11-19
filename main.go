@@ -8,6 +8,7 @@ import (
 	"gotools2/modbus2"
 	"log"
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/simonvetter/modbus"
@@ -31,11 +32,17 @@ var (
 	res = modbus2.Res{}
 
 	conf = modbus2.Conf{}
+
+	// Ajout d'un mutex pour synchroniser l'accès à `res`
+	resMutex sync.Mutex
+
+	stopChannel chan bool
 )
 
 //go:embed static/html/*.html
 //go:embed static/js/*.js
 //go:embed README.md
+
 var content embed.FS
 
 func serveReadme(w http.ResponseWriter, r *http.Request) {
@@ -72,10 +79,10 @@ func dataHandler(w http.ResponseWriter, r *http.Request) {
 func sendDataHandler(w http.ResponseWriter, r *http.Request) {
 
 	var dataReceived DataReceived
-
 	err := json.NewDecoder(r.Body).Decode(&dataReceived)
 	if err != nil {
 		http.Error(w, "Erreur lors du décodage de la donnée", http.StatusBadRequest)
+		fmt.Println(err)
 		return
 	}
 
@@ -88,26 +95,45 @@ func sendDataHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 
+	// Arrêter la goroutine en cours si elle existe
+	if stopChannel != nil {
+		stopChannel <- true
+	}
+
 	mc, err := modbus2.CreateModbusClient(dataReceived.Host)
 
-	// pour ne pas quitter le programme si l'utilisateur se trompe dans le host
+	// Pour ne pas quitter le programme si l'utilisateur se trompe dans le host
 	if err != nil {
+		fmt.Println("Erreur lors de la création du client Modbus:", err)
 		return
 	}
 
+	conf = modbus2.Conf{}
 	conf.Decode("conf-copy.csv")
-	go updateValues(mc)
+
+	// Créer un nouveau channel pour arrêter la nouvelle goroutine
+	stopChannel = make(chan bool)
+
+	// Démarrer une nouvelle goroutine pour mettre à jour les valeurs
+	go updateValues(mc, stopChannel)
 }
 
-func updateValues(mc *modbus.ModbusClient) {
+func updateValues(mc *modbus.ModbusClient, stop chan bool) {
 	for {
-		time.Sleep(1 * time.Second)
-		conf.Read(mc, &res)
+		select {
+		case <-stop:
+			fmt.Println("Goroutine is stopped")
+			return // Sortir de la boucle et arrêter la goroutine
+		default:
+			time.Sleep(1 * time.Second)
+			res = modbus2.Res{}
+			conf.Read(mc, &res)
+			fmt.Println("goroutine is running")
+		}
 	}
 }
 
 func main() {
-
 	logs.StartLogging()
 	go logs.ResetBuffer()
 
@@ -117,6 +143,6 @@ func main() {
 	http.HandleFunc("/getlogs", logsHandler)
 	http.HandleFunc("/readme", serveReadme)
 
-	log.Println("Serveur démarré sur http://localhost:8080")
+	log.Println("Serveur démarré sur http://localhost:8080/html")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

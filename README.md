@@ -11,7 +11,7 @@ Ce projet vise à donner une facon simple de requêter un serveur modbus sur de 
 La première ligne ne doit pas être indiqué. Les espaces ne sont pas supportés. Voir les exemples sur le repo.
 
 
-| Nom du signal                       | Registre           | taille de la donnée | position du bit | type de donnée |
+| Nom du signal                       | Registre           | Taille de la donnée | Position du bit | Type de donnée |
 | ----------------------------------- | ------------------ | ------------------- | ----------------|----------------|
 | Target state                        |        0xd102      |        uint32       |      100        |      holding   |
 | Puissance mesurée                   |        9488        |        int32        |      100        |      input     |
@@ -38,7 +38,8 @@ Les logs sont limités à 70 lignes.
 ## Futures améliorations
 
 1. Supporter le slave ID.
-2. Griser les lectures modbus en échecs.
-3. Améliorer la gestion des erreurs.
-4. Améliorer la manière de renseigner le tableau des requêtes. Ce n'est pas très intuitif.
-5. Héberger le projet sur un serveur distant type raspberry Pi (Attention au forward de l'host).
+2. Améliorer la gestion des erreurs.
+3. Améliorer la manière de renseigner le tableau des requêtes. Ce n'est pas très intuitif.
+4. Héberger le projet sur un serveur distant type raspberry Pi (Attention au forward de l'host).
+5. Possibilité de tracer les graphes des chaque signal en fonction du temps
+6. Reprendre toute l'architecture du code en utilisant vue.js (faire le point 6 puis le point 5)
