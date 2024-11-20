@@ -17,15 +17,20 @@
         }
     
         /* Corps de la page : centrer tout le contenu */
+        .table-container {
+            max-height: 80vh; /* Fixe la hauteur maximale à 80% de la hauteur de la fenêtre */
+            margin-bottom: 20px; /* Vous pouvez ajouter une marge pour espacer le bouton du bas */
+        }
+        
         body {
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
             font-family: 'Arial', sans-serif;
             background-color: #f4f7fb; /* Couleur de fond claire */
             color: #333;
+            overflow-y: auto; 
         }
     
         /* Style des titres */

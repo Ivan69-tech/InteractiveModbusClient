@@ -4,6 +4,7 @@ import (
 	"embed"
 	"encoding/json"
 	"fmt"
+	"gotools2/database"
 	"gotools2/logs"
 	"gotools2/modbus2"
 	"log"
@@ -28,10 +29,18 @@ type LogData struct {
 	Log string `json:"log"`
 }
 
+type Db struct {
+	Time    []time.Time `json:"time"`
+	Signaux []string    `json:"signaux"`
+	Data    [][]int     `json:"data"`
+}
+
 var (
 	res = modbus2.Res{}
 
 	conf = modbus2.Conf{}
+
+	db = database.Database{}
 
 	// Ajout d'un mutex pour synchroniser l'accès à `res`
 	resMutex sync.Mutex
@@ -109,7 +118,7 @@ func sendDataHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	conf = modbus2.Conf{}
-	conf.Decode("conf-copy.csv")
+	conf.Decode("conf.csv")
 
 	// Créer un nouveau channel pour arrêter la nouvelle goroutine
 	stopChannel = make(chan bool)
@@ -118,17 +127,31 @@ func sendDataHandler(w http.ResponseWriter, r *http.Request) {
 	go updateValues(mc, stopChannel)
 }
 
+func sendDbHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	data := Db{
+		Time:    db.Time,
+		Signaux: db.Signaux,
+		Data:    db.Data,
+	}
+
+	err := json.NewEncoder(w).Encode(data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
 func updateValues(mc *modbus.ModbusClient, stop chan bool) {
 	for {
 		select {
 		case <-stop:
-			fmt.Println("Goroutine is stopped")
-			return // Sortir de la boucle et arrêter la goroutine
+			return // Arrêter la goroutine
 		default:
 			time.Sleep(1 * time.Second)
 			res = modbus2.Res{}
 			conf.Read(mc, &res)
-			fmt.Println("goroutine is running")
+			db.Save(res)
 		}
 	}
 }
@@ -141,6 +164,7 @@ func main() {
 	http.HandleFunc("/data", dataHandler)
 	http.HandleFunc("/sendData", sendDataHandler)
 	http.HandleFunc("/getlogs", logsHandler)
+	http.HandleFunc("/getdb", sendDbHandler)
 	http.HandleFunc("/readme", serveReadme)
 
 	log.Println("Serveur démarré sur http://localhost:8080/html")
