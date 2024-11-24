@@ -12,3 +12,6 @@ HVAC2 fault,0x4200,uint32,7,input
 HVAC3 fault,0x4300,uint32,7,input
 P measurement,9488,int32,100,input
 Q measurement,9490,int32,100,input
+Enclosure subsystem fault,0x2414,uint32,5,input
+Aux frequency,0x3400,uint32,100,input
+Aux total P,0x3412,uint32,100,input

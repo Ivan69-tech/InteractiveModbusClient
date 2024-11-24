@@ -118,7 +118,7 @@ func sendDataHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	conf = modbus2.Conf{}
-	conf.Decode("conf.csv")
+	conf.Decode("conf-copy.csv")
 
 	// Créer un nouveau channel pour arrêter la nouvelle goroutine
 	stopChannel = make(chan bool)

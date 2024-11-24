@@ -213,6 +213,12 @@
 
        
         function updateTable(data) {
+            
+            if (!data || !data.signal || !data.values) {
+                console.error("Données invalides reçues pour le tableau:", data);
+                return; // Arrête l'exécution si `data` est invalide
+            }
+
             var tableBody = document.querySelector('#modbus-table');
             tableBody.innerHTML = ''; // Clear the table body before updating it
 

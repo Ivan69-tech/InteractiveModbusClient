@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Line Chart with Chart.js</title>
+    <div id="navbar"></div>
+    <h1> Mon graphe</h1>
+    <script src="../js/chart.js"></script> <!-- Link to Chart.js CDN -->
+    <script src="../js/jquery.js"></script> <!-- Link to jQuery CDN -->
+    <script src="../js/chartjs-adapter-date-fns.js"></script>
+
+</head>
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        background: #f5f5f5;
+        color: #333;
+    }
+
+    h1 {
+        margin: 20px 0;
+    }
+
+    .dropdown-container {
+        margin-bottom: 20px;
+    }
+
+    select {
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 20px;
+        width: 100%;
+        max-width: 300px;
+        margin: 30px;
+    }
+
+    .chart-container {
+        width: 50vw;  /* 50% of the viewport width */
+        height: 50vh; /* 50% of the viewport height */
+        position: relative;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+<body>
+    <div>
+        <p>Choisis le signal que tu veux tracer en live </p>
+        <select id="myDropdown">
+            <option value="">Select a signal to plot</option>
+        </select>
+    </div>
+
+    <div class="chart-container"><canvas id="myChart"></canvas></div>
+
+    <script>
+
+    let iteration = 0;
+    let myChart = null;
+
+// insérer la barre de navigation
+    $(function(){
+        $("#navbar").load("nav.html");
+    });
+    
+
+// récupérer les données accumulées par mon backend
+    function fetchData() {
+            return fetch('/getdb')
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Request failed with status: ' + response.status);
+                    }
+                })
+                .then(data => {
+                    iteration += 1;
+                    console.log(data);
+                    if (iteration === 1) {
+                        loadDropdown(data);
+                    }
+                    return data; // Return data so it can be used in subsequent 'then' calls
+                })
+                .catch(error => {
+                    console.error('Request failed', error);
+                });
+        }
+
+    fetchData();
+
+    setInterval(update, 1000);
+
+// remplir le dropdown avec la liste de signaux
+    async function loadDropdown(data) {
+        if (data && data.signaux) {
+            const dropdown = document.getElementById('myDropdown');
+            data.signaux.forEach(signal => {
+                const option = document.createElement('option');
+                option.value = signal;
+                option.textContent = signal;
+                dropdown.appendChild(option);
+            });
+        } else {
+            console.error("No 'signaux' found in the data.");
+        }
+    }
+
+// changement de selected signal
+    $(document).ready(function() {
+    fetchData()
+        .then(data => { 
+            $('#myDropdown').change(function() {  
+                const signal = $(this).val();  
+                plotGraph(data, signal);
+            });
+        })
+        .catch(error => {
+            console.error('Erreur dans la récupération des données', error);  // Log d'erreur
+        });
+    });
+
+
+
+//update du graph toutes les secondes
+    function update() {
+        $(document).ready(function() {
+        fetchData()
+            .then(data => {
+                const signal = $('#myDropdown').val();  
+                let timestamps = data.time;
+                const index = data.signaux.indexOf(signal);
+                let dataToPlot = data.data[index];
+                myChart.data.labels = timestamps;
+                myChart.data.datasets[0].data = dataToPlot;
+                myChart.update();
+            })
+            .catch(error => {
+                console.error('Erreur dans la récupération des données', error);  // Log d'erreur
+            });
+        });
+    }
+
+    
+// fonction du tracé de graph
+    function plotGraph(data, signalToPlot){
+        console.log("plotgrapĥ appelée")
+        const ctx = document.getElementById('myChart').getContext('2d');
+        let timestamps = data.time.map(time => new Date(time));
+        const index = data.signaux.indexOf(signalToPlot);
+        let dataToPlot = data.data[index];
+
+        if (myChart) {
+                myChart.destroy();
+            }
+
+        myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: timestamps, 
+                datasets: [{
+                    label: 'Modbus Value',
+                    data: dataToPlot,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1,
+                    fill: false,
+                    pointHoverBackgroundColor: 'rgba(255, 99, 132, 1)', 
+                    pointHoverBorderColor: 'rgba(255, 99, 132, 1)', 
+                    pointHoverBorderWidth: 2 
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'hour',
+                            tooltipFormat: 'yyyy-MM-dd HH:mm:ss',
+                            displayFormats: {
+                                hour: 'yyyy-MM-dd HH:mm:ss'
+                            }
+                        },
+                    title: {
+                        display: true,
+                        text: 'Timestamp'
+                    }
+                },
+                    }
+                }
+        });
+    }
+        
+    </script>
+</body>
+</html>
