@@ -4,9 +4,9 @@
     <title>Line Chart with Chart.js</title>
     <div id="navbar"></div>
     <h1> Mon graphe</h1>
-    <script src="../js/chart.js"></script> <!-- Link to Chart.js CDN -->
-    <script src="../js/jquery.js"></script> <!-- Link to jQuery CDN -->
-    <script src="../js/chartjs-adapter-date-fns.js"></script>
+    <script src="static/js/chart.js"></script> <!-- Link to Chart.js CDN -->
+    <script src="static/js/jquery.js"></script> <!-- Link to jQuery CDN -->
+    <script src="static/js/chartjs-adapter-date-fns.js"></script>
 
 </head>
 
@@ -153,7 +153,7 @@
     
 // fonction du tracé de graph
     function plotGraph(data, signalToPlot){
-        console.log("plotgrapĥ appelée")
+        console.log("plotgraph appelée")
         const ctx = document.getElementById('myChart').getContext('2d');
         let timestamps = data.time.map(time => new Date(time));
         const index = data.signaux.indexOf(signalToPlot);

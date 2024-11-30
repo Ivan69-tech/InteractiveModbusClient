@@ -160,13 +160,17 @@ func main() {
 	logs.StartLogging()
 	go logs.ResetBuffer()
 
-	http.Handle("/", http.FileServer(http.Dir("./static")))
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
+
+	fs := http.FileServer(http.Dir("./static/html"))
+	http.Handle("/", http.StripPrefix("/", fs))
+
 	http.HandleFunc("/data", dataHandler)
 	http.HandleFunc("/sendData", sendDataHandler)
 	http.HandleFunc("/getlogs", logsHandler)
 	http.HandleFunc("/getdb", sendDbHandler)
 	http.HandleFunc("/readme", serveReadme)
 
-	log.Println("Serveur démarré sur http://localhost:8080/html")
+	log.Println("Serveur démarré sur http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
