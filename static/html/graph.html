@@ -75,25 +75,25 @@
 
 // récupérer les données accumulées par mon backend
     function fetchData() {
-            return fetch('/getdb')
-                .then(response => {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        throw new Error('Request failed with status: ' + response.status);
-                    }
-                })
-                .then(data => {
-                    iteration += 1;
-                    console.log(data);
-                    if (iteration === 1) {
-                        loadDropdown(data);
-                    }
-                    return data; // Return data so it can be used in subsequent 'then' calls
-                })
-                .catch(error => {
-                    console.error('Request failed', error);
-                });
+        return fetch('/getdb')
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Request failed with status: ' + response.status);
+                }
+            })
+            .then(data => {
+                iteration += 1;
+                console.log(data);
+                if (iteration === 1) {
+                    loadDropdown(data);
+                }
+                return data; // Return data so it can be used in subsequent 'then' calls
+            })
+            .catch(error => {
+                console.error('Request failed', error);
+            });
         }
 
     fetchData();
