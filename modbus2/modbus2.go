@@ -25,6 +25,13 @@ type Res struct {
 	Res  []int
 }
 
+type WriteReq struct {
+	Register int
+	DataSize string
+	DataType string
+	Value    int
+}
+
 // Création du client modbus
 func CreateModbusClient(host string) (*modbus.ModbusClient, error) {
 
@@ -177,5 +184,35 @@ func (c *Conf) Decode(path string) {
 			fmt.Println("wrong input data, must be coil, input or holding")
 			os.Exit(1)
 		}
+	}
+}
+
+func Write(c *modbus.ModbusClient, r WriteReq) {
+
+	fmt.Println("write function called")
+	var err error
+
+	switch r.DataType {
+	case "coil register":
+		err = c.WriteCoil(uint16(r.Register), r.Value == 1)
+	case "holding register":
+		switch r.DataSize {
+		case "int16", "uint16":
+			err = c.WriteRegister(uint16(r.Register), uint16(r.Value))
+		case "int32", "uint32":
+			err = c.WriteUint32(uint16(r.Register), uint32(r.Value))
+		default:
+			fmt.Println("Unsupported DataSize for register:", r.DataSize)
+			return
+		}
+	default:
+		fmt.Println("Unsupported DataType:", r.DataType)
+		return
+	}
+
+	if err != nil {
+		fmt.Println("Error during write operation:", err)
+	} else {
+		fmt.Println("Write operation successful")
 	}
 }

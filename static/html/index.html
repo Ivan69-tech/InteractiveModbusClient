@@ -8,157 +8,186 @@
     <style>
         /* Toute la portion style est du code ChatGPT qui fait très bien cela et ce n'est pas intéressant... */
 
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-        /* Reset de marges et de padding */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-    
-        /* Corps de la page : centrer tout le contenu */
-        .table-container {
-            max-height: 80vh; /* Fixe la hauteur maximale à 80% de la hauteur de la fenêtre */
-            margin-bottom: 20px; /* Vous pouvez ajouter une marge pour espacer le bouton du bas */
-        }
-        
-        body {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f7fb; /* Couleur de fond claire */
-            color: #333;
-            overflow-y: auto; 
-        }
-    
-        /* Style des titres */
+    /* Styles généraux */
+    body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start; /* Changez ici pour aligner le contenu en haut */
+        align-items: center; /* Cela peut rester pour centrer horizontalement */
+        height: 100vh;
+        margin: 0;
+        background-color: #f4f7fb;
+        color: #333;
+        padding-top: 20px; /* Ajoutez un padding si vous le souhaitez */
+    }
+    /* Titres */
+    h1 {
+        text-align: center;
+        font-size: 24px;
+        color: #2C3E50;
+        margin-bottom: 20px;
+        font-weight: 600;
+    }
+
+    /* Styles des conteneurs de formulaire */
+    .form-wrapper {
+        display: flex; /* Assurez-vous que le conteneur utilise flexbox */
+        justify-content: space-between;
+        width: 80%;
+        max-width: 1000px;
+        margin: 20px auto 0; /* Ajoutez une marge supérieure de 20px */
+    }
+
+    .form-container {
+        background-color: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin: 10px;
+        flex: 0 0 50%; /* Changez ici pour que chaque conteneur prenne 50% de la largeur */
+        box-sizing: border-box;
+    }
+
+    .form-container h1 {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+    }
+
+    /* Styles des entrées et sélecteurs */
+    input[type="text"], select {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 1em;
+    }
+
+    input[type="text"]:focus {
+        border-color: #3498db;
+    }
+
+    select {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background: url('data:image/svg+xml;utf8,<svg fill="%23ddd" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h24v24H0z" fill="none"/><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 10px center;
+        background-size: 16px 16px;
+    }
+
+    /* Styles des boutons */
+    .button-container {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+
+    button {
+        width: 100%;
+        padding: 12px;
+        background-color: #3498db;
+        color: #fff;
+        font-size: 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin: 5px;
+    }
+
+    button:hover {
+        background-color: #2980b9;
+    }
+
+    /* Styles spécifiques pour les tableaux */
+    table {
+        width: 75%;
+        max-width: 100%;
+        border-collapse: collapse;
+        margin: 30px auto;
+        table-layout: fixed;
+    }
+
+    th, td {
+        padding: 15px;
+        border: 1px solid #ddd;
+        text-align: center;
+        vertical-align: middle;
+        word-wrap: break-word;
+        white-space: nowrap;
+    }
+
+    th:nth-child(1), td:nth-child(1) {
+        min-width: 150px;
+    }
+
+    th:nth-child(2), td:nth-child(2) {
+        min-width: 100px;
+    }
+
+    .red-cell {
+        background-color: red;
+        color: white;
+    }
+
+    .grey-cell {
+        background-color: grey;
+        color: white;
+    }
+
+    /* Responsive pour les petits écrans */
+    @media (max-width: 600px) {
         h1 {
-            text-align: center;
-            font-size: 24px;
-            color: #2C3E50;
-            margin-bottom: 20px;
-            font-weight: 600;
+            font-size: 20px;
         }
-    
-        /* Style du formulaire */
-        .form-container {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px; /* Limite la largeur du formulaire */
-            margin: 0 auto 35px auto; /* Centrage horizontal */
-            display: flex;
-            flex-direction: column; /* Permet d'aligner les éléments en colonne */
-            align-items: center; /* Centrer les éléments horizontalement */
-        }
-    
-        input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+
+        input[type="text"], button {
             font-size: 14px;
-            outline: none;
-            transition: border-color 0.3s ease;
         }
-    
-        input[type="text"]:focus {
-            border-color: #3498db; /* Bordure bleue au focus */
-        }
-
-        .button-container {
-            display: flex;
-            justify-content: center; /* Centrer le bouton */
-            width: 100%; /* S'assurer que le conteneur prend toute la largeur */
-        }
-    
-        button {
-            width: 100%; /* Taille ajustée pour deux boutons */
-            padding: 12px;
-            background-color: #3498db; /* Couleur bleue pour le bouton */
-            color: #fff;
-            font-size: 16px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            margin: 5px;
-        }
-        
-        button:hover {
-            background-color: #2980b9; /* Couleur bleue plus sombre au survol */
-        }
-    
-        /* Style du tableau */
-        table {
-            width: 75%; /* Table prend 75% de la largeur */
-            max-width: 100%; /* S'assure que le tableau ne dépasse pas la largeur du conteneur */
-            border-collapse: collapse;
-            margin: 30px auto; /* Centrer le tableau avec une marge au-dessus */
-            table-layout: fixed; /* Fixe la taille des colonnes */
-        }
-
-        /* Assurer que les colonnes ne se brisent pas */
-        th, td {
-            padding: 15px;
-            border: 1px solid #ddd;
-            text-align: center;
-            vertical-align: middle;
-            word-wrap: break-word; /* Permet de couper les mots si trop longs */
-            white-space: nowrap; /* Evite le retour à la ligne */
-        }
-
-        /* Donner une largeur minimale à la colonne signal */
-        th:nth-child(1), td:nth-child(1) {
-            min-width: 150px; /* largeur minimale pour la colonne Signal */
-        }
-
-        /* Colonne Valeur peut se redimensionner */
-        th:nth-child(2), td:nth-child(2) {
-            min-width: 100px; /* largeur minimale pour la colonne Valeur */
-        }
-
-        /* Ajout du style pour la cellule rouge */
-        .red-cell {
-            background-color: red;
-            color: white;
-        }
-
-        .grey-cell {
-            background-color: grey;
-            color: white;
-        }
-    
-        /* Responsive pour les petits écrans */
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 20px;
-            }
-    
-            input[type="text"], button {
-                font-size: 14px;
-            }
-        }
+    }
     </style>
+
 </head>
 <body>
     <div id="navbar"></div>
     <div>
         
-        <div class="form-container">
+        <div class="form-wrapper">
+            <div class="form-container">
+                <h1>Host du serveur modbus</h1>
+                <input type="text" id="host" placeholder="host" />
+                <div class="button-container">
+                    <button type="submit" onclick="sendData()">Go</button>
+                </div>
+            </div>
         
-            
-        <h1>Host du serveur modbus</h1>
-        <input type="text" id="host" placeholder="host" />
-        <div class="button-container">
-            <button type="submit" onclick="sendData()">Go</button>
-        </div>
-
+            <div class="form-container">
+                <h1>Ecrire une requête modbus</h1>
+                <input type="text" id="register" placeholder="Register" />
+                <select id="data-size">
+                    <option value="uint16">uint16</option>
+                    <option value="int16">int16</option>
+                    <option value="uint32">uint32</option>
+                    <option value="int32">int32</option>
+                </select>
+                <select id="data-type">
+                    <option value="holding register">holding register</option>
+                    <option value="coil register">coil register</option>
+                </select>
+                <input type="text" id="value" placeholder="Value to write" />
+                <div class="button-container">
+                    <button type="submit" onclick="Writedata()">Write</button>
+                </div>
+            </div>
         </div>
 
         <h1>Résultat de la lecture Modbus</h1>
@@ -206,6 +235,32 @@
                 } else {
                     console.error('Erreur lors de l\'envoi des données');
                 }
+            } catch (error) {
+                console.error('Erreur de réseau:', error);
+            }
+        }
+
+        async function Writedata() {
+            const register = $('#register').val()
+            const dataSize = $('#data-size').val();
+            const dataType = $('#data-type').val();
+            const Value = $('#value').val();
+            const data = {register: parseInt(register,10),
+                dataSize: dataSize,
+                dataType: dataType,
+                Value: parseInt(Value,10)
+            };
+
+            console.log(data);
+
+            try {
+                const response = await fetch('/writemodbus', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
             } catch (error) {
                 console.error('Erreur de réseau:', error);
             }

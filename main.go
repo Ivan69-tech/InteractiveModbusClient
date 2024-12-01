@@ -25,6 +25,13 @@ type DataReceived struct {
 	Path string `json:"path"`
 }
 
+type GetRequest struct {
+	Register int    `json:"register"`
+	DataSize string `json:"dataSize"`
+	DataType string `json:"dataType"`
+	Value    int    `json:"value"`
+}
+
 type LogData struct {
 	Log string `json:"log"`
 }
@@ -44,6 +51,8 @@ var (
 
 	// Ajout d'un mutex pour synchroniser l'accès à `res`
 	resMutex sync.Mutex
+
+	mcGlobal *modbus.ModbusClient
 
 	stopChannel chan bool
 )
@@ -110,6 +119,7 @@ func sendDataHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	mc, err := modbus2.CreateModbusClient(dataReceived.Host)
+	mcGlobal = mc
 
 	// Pour ne pas quitter le programme si l'utilisateur se trompe dans le host
 	if err != nil {
@@ -125,6 +135,32 @@ func sendDataHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Démarrer une nouvelle goroutine pour mettre à jour les valeurs
 	go updateValues(mc, stopChannel)
+}
+
+func GetModbusWrite(w http.ResponseWriter, r *http.Request) {
+
+	var getRequest GetRequest
+
+	err := json.NewDecoder(r.Body).Decode(&getRequest)
+	if err != nil {
+		http.Error(w, "Erreur lors du décodage de la donnée", http.StatusBadRequest)
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(getRequest)
+
+	var writeReq = modbus2.WriteReq{
+		Register: getRequest.Register,
+		DataSize: getRequest.DataSize,
+		DataType: getRequest.DataType,
+		Value:    getRequest.Value,
+	}
+
+	fmt.Println("mc= ", mcGlobal)
+
+	modbus2.Write(mcGlobal, writeReq)
+
+	return
 }
 
 func sendDbHandler(w http.ResponseWriter, r *http.Request) {
@@ -170,6 +206,7 @@ func main() {
 	http.HandleFunc("/getlogs", logsHandler)
 	http.HandleFunc("/getdb", sendDbHandler)
 	http.HandleFunc("/readme", serveReadme)
+	http.HandleFunc("/writemodbus", GetModbusWrite)
 
 	log.Println("Serveur démarré sur http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
