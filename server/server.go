@@ -16,7 +16,6 @@ func updateInput() {
 	for {
 		time.Sleep(1 * time.Second)
 		K += 1
-		fmt.Println(K)
 	}
 }
 
