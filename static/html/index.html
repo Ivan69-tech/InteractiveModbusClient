@@ -36,6 +36,14 @@
         font-weight: 600;
     }
 
+    p {
+        text-align: center;
+        font-size: 14px;
+        color: #2C3E50;
+        margin-bottom: 20px;
+        font-weight: 600;
+    }
+
     /* Styles des conteneurs de formulaire */
     .form-wrapper {
         display: flex; /* Assurez-vous que le conteneur utilise flexbox */
@@ -164,7 +172,12 @@
         <div class="form-wrapper">
             <div class="form-container">
                 <h1>Host du serveur modbus</h1>
-                <input type="text" id="host" placeholder="host" />
+                
+                <p> un serveur modbus est disponible sur localhost:1502 avec le fichier de
+                    configuration correspondant
+                </p>
+
+                <input type="text" id="host" value="localhost:1502" />
                 <div class="button-container">
                     <button type="submit" onclick="sendData()">Go</button>
                 </div>
@@ -172,6 +185,8 @@
         
             <div class="form-container">
                 <h1>Ecrire une requête modbus</h1>
+                <p> (Ecrire 1 ou 0 pour des coils registers)
+                </p>
                 <input type="text" id="register" placeholder="Register" />
                 <select id="data-size">
                     <option value="uint16">uint16</option>

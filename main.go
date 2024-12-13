@@ -7,6 +7,7 @@ import (
 	"gotools2/database"
 	"gotools2/logs"
 	"gotools2/modbus2"
+	"gotools2/server"
 	"log"
 	"net/http"
 	"sync"
@@ -147,7 +148,7 @@ func GetModbusWrite(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println(getRequest)
+	//fmt.Println(getRequest)
 
 	var writeReq = modbus2.WriteReq{
 		Register: getRequest.Register,
@@ -156,7 +157,7 @@ func GetModbusWrite(w http.ResponseWriter, r *http.Request) {
 		Value:    getRequest.Value,
 	}
 
-	fmt.Println("mc= ", mcGlobal)
+	//fmt.Println("mc= ", mcGlobal)
 
 	modbus2.Write(mcGlobal, writeReq)
 
@@ -195,6 +196,7 @@ func updateValues(mc *modbus.ModbusClient, stop chan bool) {
 func main() {
 	logs.StartLogging()
 	go logs.ResetBuffer()
+	go server.Server()
 
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
 
