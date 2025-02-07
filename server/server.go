@@ -29,7 +29,7 @@ func Server() {
 	mh.holdingReg[4] = 40
 	mh.coils[10] = true
 
-	host := "tcp://localhost:1502"
+	host := "tcp://0.0.0.0:1502"
 
 	server, err = modbus.NewServer(&modbus.ServerConfiguration{
 		URL:        host,
